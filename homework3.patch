@@ -1,0 +1,109 @@
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+--- a/pom.xml	(revision 8cab352515f134fc43820d9c461ad4773f3a6472)
++++ b/pom.xml	(date 1677617861936)
+@@ -18,6 +18,8 @@
+         <commons-collections4.version>4.4</commons-collections4.version>
+         <junit-jupiter.version>5.9.2</junit-jupiter.version>
+         <junit-platform-suite-engine.version>1.9.2</junit-platform-suite-engine.version>
++        <selenium.version>4.8.0</selenium.version>
++        <assertj.version>3.24.2</assertj.version>
+ 
+         <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+         <maven-failsafe-plugin.version>3.0.0-M8</maven-failsafe-plugin.version>
+@@ -50,6 +52,19 @@
+             <version>${junit-platform-suite-engine.version}</version>
+             <scope>test</scope>
+         </dependency>
++
++        <dependency>
++            <groupId>org.seleniumhq.selenium</groupId>
++            <artifactId>selenium-java</artifactId>
++            <version>${selenium.version}</version>
++        </dependency>
++
++        <dependency>
++            <groupId>org.assertj</groupId>
++            <artifactId>assertj-core</artifactId>
++            <version>${assertj.version}</version>
++            <scope>test</scope>
++        </dependency>
+ 
+     </dependencies>
+ 
+Index: src/test/java/ru/levelp/at/homework3/SleepUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/ru/levelp/at/homework3/SleepUtils.java b/src/test/java/ru/levelp/at/homework3/SleepUtils.java
+new file mode 100644
+--- /dev/null	(date 1677243234551)
++++ b/src/test/java/ru/levelp/at/homework3/SleepUtils.java	(date 1677243234551)
+@@ -0,0 +1,15 @@
++package ru.levelp.at.homework3;
++
++public final class SleepUtils {
++
++    private SleepUtils() {
++    }
++
++    public static void sleep(long timeout) {
++        try {
++            Thread.sleep(timeout);
++        } catch (InterruptedException e) {
++            throw new RuntimeException(e);
++        }
++    }
++}
+Index: src/test/java/ru/levelp/at/homework3/MailTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/ru/levelp/at/homework3/MailTest.java b/src/test/java/ru/levelp/at/homework3/MailTest.java
+new file mode 100644
+--- /dev/null	(date 1677617783393)
++++ b/src/test/java/ru/levelp/at/homework3/MailTest.java	(date 1677617783393)
+@@ -0,0 +1,37 @@
++package ru.levelp.at.homework3;
++
++import org.assertj.core.api.Assertions;
++import org.junit.jupiter.api.AfterEach;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
++import org.openqa.selenium.WebDriver;
++import org.openqa.selenium.chrome.ChromeDriver;
++import org.openqa.selenium.support.ui.WebDriverWait;
++
++class MailTest {
++
++    private static final String MAIL_URL = "https://mail.ru/";
++
++    private WebDriver driver;
++
++    @BeforeEach
++    void setUp() {
++        driver = new ChromeDriver();
++    }
++
++    @Test
++    void openMailHomePage() {
++        SleepUtils.sleep(1500);
++        driver.navigate().to(MAIL_URL);
++        SleepUtils.sleep(3000);
++        var title = driver.getTitle();
++
++        Assertions.assertThat(title).isEqualTo("Mail.ru: почта, поиск в интернете, новости, игры");
++    }
++
++    @AfterEach
++    void tearDown() {
++        driver.quit();
++    }
++
++}
